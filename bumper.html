@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kids' Bumper URL Generator</title>
+    <title>Real-Time URL Generator</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -23,8 +23,6 @@
             font-weight: bold;
             font-family: "Courier New", Courier, monospace;
             word-break: break-all;
-            background: yellow;
-            border: black;
         }
         .warning {
             color: red;
@@ -49,9 +47,11 @@
     </style>
 </head>
 <body>
-    <h1>Kids' Bumper URL Generator</h1>
-    <input type="text" id="destinationUrl" placeholder="Enter destination URL (including UTMs!)" required>
+    <h1>Real-Time URL Generator</h1>
+    <input type="text" id="destinationUrl" placeholder="Enter destination URL" required>
     <div class="output" id="output"></div>
+    <div class="warning" id="utmWarning" style="display: none;">This doesn't seem to include UTM parameters -- please doublecheck the URL.</div>
+    <div class="warning" id="protocolWarning" style="display: none;">The URL should start with http:// or https://.</div>
     <div class="button-group" id="buttonGroup" style="display: none;">
         <button id="copyButton">Copy to Clipboard</button>
         <button id="testButton">Test Updated URL</button>
@@ -62,6 +62,8 @@
             const destinationUrl = document.getElementById('destinationUrl').value;
             const outputDiv = document.getElementById('output');
             const buttonGroup = document.getElementById('buttonGroup');
+            const utmWarningDiv = document.getElementById('utmWarning');
+            const protocolWarningDiv = document.getElementById('protocolWarning');
 
             if (destinationUrl) {
                 const encodedUrl = encodeURIComponent(destinationUrl);
@@ -69,11 +71,18 @@
                 outputDiv.textContent = finalUrl;
                 buttonGroup.style.display = 'flex';
 
-                                // Check for UTM parameters
+                // Check for UTM parameters
                 if (!destinationUrl.toLowerCase().includes('utm_')) {
-                    warningDiv.style.display = 'block';
+                    utmWarningDiv.style.display = 'block';
                 } else {
-                    warningDiv.style.display = 'none';
+                    utmWarningDiv.style.display = 'none';
+                }
+
+                // Check for proper protocol (http:// or https://)
+                if (!destinationUrl.startsWith('http://') && !destinationUrl.startsWith('https://')) {
+                    protocolWarningDiv.style.display = 'block';
+                } else {
+                    protocolWarningDiv.style.display = 'none';
                 }
 
                 document.getElementById('copyButton').onclick = function() {
@@ -90,6 +99,8 @@
             } else {
                 outputDiv.textContent = '';
                 buttonGroup.style.display = 'none';
+                utmWarningDiv.style.display = 'none';
+                protocolWarningDiv.style.display = 'none';
             }
         });
     </script>
