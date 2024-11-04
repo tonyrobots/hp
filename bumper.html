@@ -27,6 +27,15 @@
             border: black 1px dotted;
             padding: 30px;
         }
+        .notification {
+            display: none;
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            border-radius: 5px;
+        }
         .warning {
             color: red;
             margin-top: 10px;
@@ -47,12 +56,22 @@
         button:hover {
             background-color: #0056b3;
         }
+        .utm-details {
+            margin-top: 20px;
+            text-align: left;
+            border: 1px solid #ddd;
+            padding: 15px;
+            background-color: #f9f9f9;
+        }
+        .utm-details h3 {
+            margin-top: 0;
+        }
     </style>
 </head>
 <body>
     <h1>Kids' Bumper URL Generator</h1>
     <input type="text" id="destinationUrl" placeholder="Enter destination URL" required>
-     <h3>Bumper-ified URL:</h3>
+    <h3>Bumper-ified URL:</h3>
     <div class="output" id="output"></div>
     <div class="warning" id="utmWarning" style="display: none;">This doesn't seem to include UTM parameters -- please doublecheck the URL.</div>
     <div class="warning" id="protocolWarning" style="display: none;">The URL should start with http:// or https://.</div>
@@ -60,27 +79,54 @@
         <button id="copyButton">Copy to Clipboard</button>
         <button id="testButton">Test Updated URL</button>
     </div>
+    <div class="notification" id="copyNotification">URL copied to clipboard!</div>
+    <div class="utm-details" id="utmDetails" style="display: none;">
+        <h3>UTM Details:</h3>
+        <ul id="utmList"></ul>
+    </div>
 
     <script>
-        document.getElementById('destinationUrl').addEventListener('input', function() {
-            const destinationUrl = document.getElementById('destinationUrl').value;
+        const destinationInput = document.getElementById('destinationUrl');
+
+        // Clear the input field on focus
+        destinationInput.addEventListener('focus', function() {
+            destinationInput.value = '';
+        });
+
+        destinationInput.addEventListener('input', function() {
+            const destinationUrl = destinationInput.value;
             const outputDiv = document.getElementById('output');
             const buttonGroup = document.getElementById('buttonGroup');
             const utmWarningDiv = document.getElementById('utmWarning');
             const protocolWarningDiv = document.getElementById('protocolWarning');
+            const copyNotification = document.getElementById('copyNotification');
+            const utmDetailsDiv = document.getElementById('utmDetails');
+            const utmList = document.getElementById('utmList');
 
             if (destinationUrl) {
                 const encodedUrl = encodeURIComponent(destinationUrl);
                 outputDiv.style.display = 'block';
                 const finalUrl = `https://www.harrypotter.com/linkout?destination=${encodedUrl}`;
-                outputDiv.textContent =  finalUrl;
+                outputDiv.textContent = finalUrl;
                 buttonGroup.style.display = 'flex';
 
                 // Check for UTM parameters
-                if (!destinationUrl.toLowerCase().includes('utm_')) {
-                    utmWarningDiv.style.display = 'block';
-                } else {
+                const urlParams = new URLSearchParams(new URL(destinationUrl, window.location.origin).search);
+                const utmParams = [...urlParams.entries()].filter(([key]) => key.toLowerCase().startsWith('utm_'));
+
+                if (utmParams.length > 0) {
                     utmWarningDiv.style.display = 'none';
+                    utmDetailsDiv.style.display = 'block';
+                    utmList.innerHTML = ''; // Clear previous details
+
+                    utmParams.forEach(([key, value]) => {
+                        const listItem = document.createElement('li');
+                        listItem.textContent = `${key}: ${value}`;
+                        utmList.appendChild(listItem);
+                    });
+                } else {
+                    utmWarningDiv.style.display = 'block';
+                    utmDetailsDiv.style.display = 'none';
                 }
 
                 // Check for proper protocol (http:// or https://)
@@ -92,7 +138,11 @@
 
                 document.getElementById('copyButton').onclick = function() {
                     navigator.clipboard.writeText(finalUrl).then(() => {
-                        alert('URL copied to clipboard!');
+                        // Show non-intrusive notification
+                        copyNotification.style.display = 'block';
+                        setTimeout(() => {
+                            copyNotification.style.display = 'none';
+                        }, 3000); // Hide after 3 seconds
                     }).catch(err => {
                         console.error('Failed to copy: ', err);
                     });
@@ -107,6 +157,7 @@
                 buttonGroup.style.display = 'none';
                 utmWarningDiv.style.display = 'none';
                 protocolWarningDiv.style.display = 'none';
+                utmDetailsDiv.style.display = 'none';
             }
         });
     </script>
