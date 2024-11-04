@@ -23,6 +23,9 @@
             font-weight: bold;
             font-family: "Courier New", Courier, monospace;
             word-break: break-all;
+            background: lightyellow;
+            border: black 1px dotted;
+            padding: 30px;
         }
         .warning {
             color: red;
@@ -68,7 +71,7 @@
             if (destinationUrl) {
                 const encodedUrl = encodeURIComponent(destinationUrl);
                 const finalUrl = `https://www.harrypotter.com/linkout?destination=${encodedUrl}`;
-                outputDiv.textContent = finalUrl;
+                outputDiv.textContent = "<h3>Bumper-ified URL</h3" + finalUrl;
                 buttonGroup.style.display = 'flex';
 
                 // Check for UTM parameters
