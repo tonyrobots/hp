@@ -26,6 +26,10 @@
             background: yellow;
             border: black;
         }
+        .warning {
+            color: red;
+            margin-top: 10px;
+        }
         .button-group {
             margin-top: 10px;
             display: flex;
@@ -64,6 +68,13 @@
                 const finalUrl = `https://www.harrypotter.com/linkout?destination=${encodedUrl}`;
                 outputDiv.textContent = finalUrl;
                 buttonGroup.style.display = 'flex';
+
+                                // Check for UTM parameters
+                if (!destinationUrl.toLowerCase().includes('utm_')) {
+                    warningDiv.style.display = 'block';
+                } else {
+                    warningDiv.style.display = 'none';
+                }
 
                 document.getElementById('copyButton').onclick = function() {
                     navigator.clipboard.writeText(finalUrl).then(() => {
