@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kids' Bumper URL Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            text-align: center;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        input[type="text"] {
+            padding: 8px;
+            font-size: 16px;
+        }
+        button {
+            padding: 10px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .output {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Kids' Bumper URL Generator</h1>
+    <form id="urlForm">
+        <label for="destinationUrl">Destination URL:</label>
+        <input type="text" id="destinationUrl" placeholder="Enter destination URL" required>
+        <label>
+            <input type="checkbox" id="addBumper">
+            Add kids' bumper?
+        </label>
+        <button type="submit">Generate URL</button>
+    </form>
+    <div class="output" id="output"></div>
+
+    <script>
+        document.getElementById('urlForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            const destinationUrl = document.getElementById('destinationUrl').value;
+            const addBumper = document.getElementById('addBumper').checked;
+            const outputDiv = document.getElementById('output');
+
+            if (addBumper && destinationUrl) {
+                const encodedUrl = encodeURIComponent(destinationUrl);
+                const finalUrl = `https://www.harrypotter.com/linkout?destination=${encodedUrl}`;
+                outputDiv.textContent = `Updated URL: ${finalUrl}`;
+            } else {
+                outputDiv.textContent = 'No kids’ bumper selected or no URL provided.';
+            }
+        });
+    </script>
+</body>
+</html>
