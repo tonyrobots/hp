@@ -12,24 +12,11 @@
             margin: 50px auto;
             text-align: center;
         }
-        form {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
         input[type="text"] {
             padding: 8px;
             font-size: 16px;
-        }
-        button {
-            padding: 10px;
-            background-color: #007BFF;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #0056b3;
+            width: 100%;
+            margin-bottom: 20px;
         }
         .output {
             margin-top: 20px;
@@ -43,19 +30,21 @@
             gap: 10px;
             justify-content: center;
         }
+        button {
+            padding: 10px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
     </style>
 </head>
 <body>
     <h1>Kids' Bumper URL Generator</h1>
-    <form id="urlForm">
-        <label for="destinationUrl">Destination URL:</label>
-        <input type="text" id="destinationUrl" placeholder="Enter destination URL" required>
-        <label>
-            <input type="checkbox" id="addBumper">
-            Add kids' bumper?
-        </label>
-        <button type="submit">Generate URL</button>
-    </form>
+    <input type="text" id="destinationUrl" placeholder="Enter destination URL" required>
     <div class="output" id="output"></div>
     <div class="button-group" id="buttonGroup" style="display: none;">
         <button id="copyButton">Copy to Clipboard</button>
@@ -63,15 +52,12 @@
     </div>
 
     <script>
-        document.getElementById('urlForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-            
+        document.getElementById('destinationUrl').addEventListener('input', function() {
             const destinationUrl = document.getElementById('destinationUrl').value;
-            const addBumper = document.getElementById('addBumper').checked;
             const outputDiv = document.getElementById('output');
             const buttonGroup = document.getElementById('buttonGroup');
 
-            if (addBumper && destinationUrl) {
+            if (destinationUrl) {
                 const encodedUrl = encodeURIComponent(destinationUrl);
                 const finalUrl = `https://www.harrypotter.com/linkout?destination=${encodedUrl}`;
                 outputDiv.textContent = finalUrl;
@@ -89,7 +75,7 @@
                     window.open(finalUrl, '_blank');
                 };
             } else {
-                outputDiv.textContent = 'No kids’ bumper selected or no URL provided.';
+                outputDiv.textContent = '';
                 buttonGroup.style.display = 'none';
             }
         });
