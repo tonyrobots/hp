@@ -34,6 +34,14 @@
         .output {
             margin-top: 20px;
             font-weight: bold;
+            font-family: "Courier New", Courier, monospace;
+            word-break: break-all;
+        }
+        .button-group {
+            margin-top: 10px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
         }
     </style>
 </head>
@@ -49,6 +57,10 @@
         <button type="submit">Generate URL</button>
     </form>
     <div class="output" id="output"></div>
+    <div class="button-group" id="buttonGroup" style="display: none;">
+        <button id="copyButton">Copy to Clipboard</button>
+        <button id="testButton">Test Updated URL</button>
+    </div>
 
     <script>
         document.getElementById('urlForm').addEventListener('submit', function(event) {
@@ -57,13 +69,28 @@
             const destinationUrl = document.getElementById('destinationUrl').value;
             const addBumper = document.getElementById('addBumper').checked;
             const outputDiv = document.getElementById('output');
+            const buttonGroup = document.getElementById('buttonGroup');
 
             if (addBumper && destinationUrl) {
                 const encodedUrl = encodeURIComponent(destinationUrl);
                 const finalUrl = `https://www.harrypotter.com/linkout?destination=${encodedUrl}`;
-                outputDiv.textContent = `Updated URL: ${finalUrl}`;
+                outputDiv.textContent = finalUrl;
+                buttonGroup.style.display = 'flex';
+
+                document.getElementById('copyButton').onclick = function() {
+                    navigator.clipboard.writeText(finalUrl).then(() => {
+                        alert('URL copied to clipboard!');
+                    }).catch(err => {
+                        console.error('Failed to copy: ', err);
+                    });
+                };
+
+                document.getElementById('testButton').onclick = function() {
+                    window.open(finalUrl, '_blank');
+                };
             } else {
                 outputDiv.textContent = 'No kids’ bumper selected or no URL provided.';
+                buttonGroup.style.display = 'none';
             }
         });
     </script>
